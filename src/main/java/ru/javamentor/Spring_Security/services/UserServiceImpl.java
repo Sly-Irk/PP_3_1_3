@@ -179,29 +179,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
-    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public void addRoleToUser(Long userId, Role role) {
-        User user = getUserById(userId);
-        Role managed = roleRepository.findById(role.getId())
-                .orElseThrow(() -> new UserRoleException("Role not found"));
-        if (user.getRoles().contains(managed))
-            throw new UserRoleException("У пользователя уже есть эта роль");
-        user.addRole(managed);
-        userRepository.save(user);
     }
 
     @Override

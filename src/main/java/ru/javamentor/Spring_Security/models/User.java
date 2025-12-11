@@ -1,11 +1,7 @@
 package ru.javamentor.Spring_Security.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,21 +71,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
     public boolean isEnabled() {
         return true;
     }
@@ -105,16 +86,6 @@ public class User implements UserDetails {
     public boolean hasRole(String roleName) {
         return roles != null && roles.stream()
                 .anyMatch(role -> role.getName().equals(roleName));
-    }
-
-    public boolean addRole(Role role) {
-        if (role == null) return false;
-        return roles.stream().noneMatch(r -> r.equals(role)) && roles.add(role);
-    }
-
-    public boolean addRoles(Set<Role> roles) {
-        if (roles == null) return false;
-        return this.roles.addAll(roles);
     }
 
     public Long getId() {
@@ -169,10 +140,6 @@ public class User implements UserDetails {
 
     public String getSelectedRole() {
         return selectedRole;
-    }
-
-    public void setSelectedRole(String selectedRole) {
-        this.selectedRole = selectedRole;
     }
 
     @Override

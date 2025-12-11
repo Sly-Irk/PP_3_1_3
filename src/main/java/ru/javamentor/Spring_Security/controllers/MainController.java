@@ -7,13 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.javamentor.Spring_Security.exceptions.*;
+import ru.javamentor.Spring_Security.exceptions.EmailException;
+import ru.javamentor.Spring_Security.exceptions.PasswordException;
+import ru.javamentor.Spring_Security.exceptions.UserNameException;
+import ru.javamentor.Spring_Security.exceptions.UserRoleException;
 import ru.javamentor.Spring_Security.models.User;
 import ru.javamentor.Spring_Security.repositories.RoleRepository;
 import ru.javamentor.Spring_Security.services.UserService;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller

@@ -1,7 +1,6 @@
 package ru.javamentor.Spring_Security.services;
 
 import org.springframework.security.core.Authentication;
-import ru.javamentor.Spring_Security.models.Role;
 import ru.javamentor.Spring_Security.models.User;
 
 import java.util.List;
@@ -15,10 +14,6 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    boolean existsByUsername(String username);
-
-    boolean existsByEmail(String email);
-
     void createUser(String username, String password, String surname, Integer age, String email, List<Long> roleIds);
 
     String regUser(User user);
@@ -28,8 +23,6 @@ public interface UserService {
     void contUpdateUser(Long id, String username, String password, String surname, Integer age, String email, List<Long> roleIds);
 
     void deleteUser(Long id);
-
-    void addRoleToUser(Long userId, Role role);
 
     String authUser(Authentication authentication);
 }
