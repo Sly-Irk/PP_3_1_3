@@ -1,6 +1,8 @@
 package ru.javamentor.Spring_Security.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -22,14 +24,26 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "{user.username.notblank}")
     @Size(min = 3, max = 50, message = "{user.username.size}")
     private String username;
 
-    @Column
+    @Column(nullable = false)
+    @NotBlank(message = "{user.surname.notblank}")
+    private String surname;
+
+    @Column(nullable = false)
+    @Min(value = 1, message = "{user.age.min}")
+    private Integer age;
+
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "{user.email.notblank}")
+    @Email(message = "{user.email.invalid}")
+    private String email;
+
+    @Column(nullable = false)
     @NotBlank(message = "{user.password.notblank}")
-    // @Size(min = 4, max = 50, message = "{user.password.size}")
     private String password;
 
     @Transient
@@ -45,8 +59,11 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String surname, Integer age, String email, String password) {
         this.username = username;
+        this.surname = surname;
+        this.age = age;
+        this.email = email;
         this.password = password;
     }
 
@@ -100,7 +117,6 @@ public class User implements UserDetails {
         return this.roles.addAll(roles);
     }
 
-
     public Long getId() {
         return id;
     }
@@ -108,6 +124,18 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
@@ -121,6 +149,18 @@ public class User implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {

@@ -1,318 +1,273 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5">
-
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5" lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Panel</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
     <style>
-        .role-badge { font-size: 0.85rem; }
-        .nav-link.active { font-weight: 500; }
-        .user-link { color: inherit; text-decoration: none; transition: color 0.2s; }
-        .user-link:hover { color: #0d6efd; text-decoration: underline; }
+        .role-badge {
+            font-size: .85rem
+        }
+        .nav-link.active {
+            font-weight: 500
+        }
+        .user-link {
+            color: inherit;
+            text-decoration: none;
+            transition: color .2s
+        }
+        .user-link:hover {
+            color: #0d6efd;
+            text-decoration: underline
+        }
     </style>
 </head>
-
 <body class="bg-light">
-
 <div class="container-fluid p-0">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" th:href="@{/}">Kata 3.1.3</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span
+                    class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarNav">
-
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" th:href="@{/}">Главная</a></li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link active" th:href="@{/admin}">Администрирование</a>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link active"
+                                                                             th:href="@{/admin}">Администрирование</a>
                     </li>
                 </ul>
-
                 <div class="d-flex align-items-center">
-                    <span class="text-light me-3">
-                        <i class="bi bi-person-fill"></i>
-                        <span sec:authentication="principal.username"></span>
-                    </span>
-
+                    <span class="text-light me-3"><i class="bi bi-person-fill"></i> <span
+                            sec:authentication="principal.username"></span></span>
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-outline-light btn-sm">
-                            <i class="bi bi-box-arrow-right"></i> Выход
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i>
+                            Выход
                         </button>
                     </form>
                 </div>
-
             </div>
         </div>
     </nav>
-
     <div sec:authorize="hasRole('ADMIN')">
         <div class="container mt-4">
             <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h2 class="h4 mb-0">
-                        <i class="bi bi-people-fill"></i> Управление пользователями
-                    </h2>
-                </div>
-
+                <div class="card-header bg-white"><h2 class="h4 mb-0"><i class="bi bi-people-fill"></i> Управление
+                    пользователями</h2></div>
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-3" id="adminTabs">
                         <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#usersTab">
-                                <i class="bi bi-people"></i> Пользователи
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#usersTab"
+                                    th:classappend="${tab == null or tab == 'users'} ? ' active'"><i
+                                    class="bi bi-people"></i> Пользователи
                             </button>
                         </li>
-
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#createTab">
-                                <i class="bi bi-person-plus"></i> Создать пользователя
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#createTab"
+                                    th:classappend="${tab == 'create'} ? ' active'"><i class="bi bi-person-plus"></i>
+                                Создать пользователя
                             </button>
                         </li>
                     </ul>
-
                     <div class="tab-content">
-
-                        <div class="tab-pane fade show active" id="usersTab">
+                        <div class="tab-pane fade" id="usersTab"
+                             th:classappend="${tab == null or tab == 'users'} ? ' show active'">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle">
                                     <thead class="table-light">
                                     <tr>
-                                        <th>ID пользователя</th>
-                                        <th>Логин пользователя</th>
+                                        <th>ID</th>
+                                        <th>Логин</th>
+                                        <th>Фамилия</th>
+                                        <th>Возраст</th>
+                                        <th>E-mail</th>
                                         <th>Роли</th>
                                         <th class="text-center">Действия</th>
                                     </tr>
                                     </thead>
-
-                                    <tbody>
-                                    <tr th:each="user : ${users}">
+                                    <tbody th:each="user : ${users}">
+                                    <tr>
                                         <td th:text="${user.id}"></td>
-
+                                        <td><a th:href="@{'/user/' + ${user.id}}" class="user-link"
+                                               th:text="${user.username}"></a></td>
+                                        <td th:text="${user.surname}"></td>
+                                        <td th:text="${user.age}"></td>
+                                        <td th:text="${user.email}"></td>
                                         <td>
-                                            <a th:href="@{'/user/' + ${user.id}}"
-                                               class="user-link"
-                                               th:text="${user.username}"></a>
-                                        </td>
-
-                                        <td>
-                                            <span th:each="role : ${user.roles}"
-                                                  class="badge role-badge me-1"
+                                            <span th:each="role : ${user.roles}" class="badge role-badge me-1"
                                                   th:classappend="${role.name == 'ROLE_ADMIN'} ? ' bg-danger' : ' bg-primary'"
-                                                  th:text="${role.name.replace('ROLE_', '')}">
-                                            </span>
+                                                  th:text="${role.name.replace('ROLE_', '')}"></span>
                                         </td>
-
                                         <td class="text-center">
                                             <div class="d-inline-flex gap-2">
-
-                                                <button type="button"
-                                                        class="btn btn-sm btn-primary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editModal"
-                                                        th:attr="data-bs-userid=${user.id},
-                                                                 data-bs-username=${user.username},
-                                                                 data-bs-roles=${#strings.listJoin(user.roles.![id], ',')}">
-                                                    <i class="bi bi-pencil-square me-1"></i> Редактировать
+                                                <button type="button" class="btn btn-sm btn-primary"
+                                                        data-bs-toggle="modal" data-bs-target="#editModal"
+                                                        th:attr="data-bs-userid=${user.id},data-bs-username=${user.username},data-bs-surname=${user.surname},data-bs-age=${user.age},data-bs-email=${user.email},data-bs-roles=${#strings.listJoin(user.roles.![id], ',')}">
+                                                    <i class="bi bi-pencil-square"></i> Редактировать
                                                 </button>
-
-                                                <button type="button"
-                                                        class="btn btn-sm btn-danger"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal"
-                                                        th:attr="data-bs-userid=${user.id},
-                                                                 data-bs-username=${user.username},
-                                                                 data-bs-roles=${#strings.listJoin(user.roles.![name], ',')}">
-                                                    <i class="bi bi-trash me-1"></i> Удалить
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                        th:attr="data-bs-userid=${user.id},data-bs-username=${user.username},data-bs-roles=${#strings.listJoin(user.roles.![name], ',')}">
+                                                    <i class="bi bi-trash"></i> Удалить
                                                 </button>
-
                                             </div>
                                         </td>
-
                                     </tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
-
-                        <div class="tab-pane fade" id="createTab">
+                        <div class="tab-pane fade" id="createTab" th:classappend="${tab == 'create'} ? ' show active'">
                             <div class="p-3 border rounded">
-                                <h5 class="mb-3">
-                                    <i class="bi bi-person-plus"></i> Создать нового пользователя
-                                </h5>
-
-                                <form th:action="@{/admin/create}" method="post" th:object="${newUser}">
+                                <h5 class="mb-3"><i class="bi bi-person-plus"></i> Создать нового пользователя</h5>
+                                <form th:action="@{/admin/create}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                     <div class="row g-3">
-
                                         <div class="col-md-4">
                                             <label class="form-label">Логин</label>
-                                            <input type="text" class="form-control" th:field="*{username}" required>
+                                            <input type="text" class="form-control" name="username"
+                                                   th:value="${newUser.username}">
                                         </div>
-
+                                        <div class="col-md-4">
+                                            <label class="form-label">Фамилия</label>
+                                            <input type="text" class="form-control" name="surname"
+                                                   th:value="${newUser.surname}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Возраст</label>
+                                            <input type="number" class="form-control" name="age"
+                                                   th:value="${newUser.age}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">E-mail</label>
+                                            <input type="email" class="form-control" name="email"
+                                                   th:value="${newUser.email}">
+                                        </div>
                                         <div class="col-md-4">
                                             <label class="form-label">Пароль</label>
-                                            <input type="password" class="form-control" th:field="*{password}" required>
+                                            <input type="password" class="form-control" name="password">
                                         </div>
-
                                         <div class="col-md-4">
                                             <label class="form-label">Роли</label>
-                                            <select class="form-select" multiple name="roles" required>
-                                                <option th:each="role : ${roles}"
-                                                        th:value="${role.id}"
+                                            <select class="form-select" name="roleIds" multiple>
+                                                <option th:each="role : ${roles}" th:value="${role.id}"
                                                         th:text="${role.name.replace('ROLE_', '')}"
-                                                        th:selected="${role.name == 'ROLE_USER'}">
-                                                </option>
+                                                        th:selected="${role.name == 'ROLE_USER'}"></option>
                                             </select>
                                         </div>
-
                                         <div class="col-12 d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="bi bi-save"></i> Создать
+                                            <button type="submit" class="btn btn-success"><i class="bi bi-save"></i>
+                                                Создать
                                             </button>
                                         </div>
-
+                                        <div class="col-12 mt-2">
+                                            <div class="alert alert-danger" th:if="${createError}"
+                                                 th:text="${createError}"></div>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <form th:action="@{/admin/update}" method="post">
-                <input type="hidden" name="id" id="editUserId">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Редактирование пользователя</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="mb-3">
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/update}" method="post">
+                    <input type="hidden" id="editUserId" name="id">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Редактирование пользователя</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
                         <label class="form-label">Логин</label>
-                        <input type="text" class="form-control" id="editUsername" name="username" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Новый пароль (не обязателен)</label>
-                        <input type="password" class="form-control" id="editPassword" name="password">
-                    </div>
-
-                    <div class="mb-3">
+                        <input id="editUsername" name="username" class="form-control mb-3">
+                        <label class="form-label">Новый пароль</label>
+                        <input id="editPassword" name="password" class="form-control mb-3">
+                        <label class="form-label">Фамилия</label>
+                        <input id="editSurname" name="surname" class="form-control mb-3">
+                        <label class="form-label">Возраст</label>
+                        <input id="editAge" name="age" type="number" class="form-control mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input id="editEmail" name="email" class="form-control mb-3">
                         <label class="form-label">Роли</label>
-                        <select class="form-select" multiple name="roleIds" id="editRoles" required>
-                            <option th:each="role : ${roles}"
-                                    th:value="${role.id}"
-                                    th:text="${role.name.replace('ROLE_', '')}">
-                            </option>
+                        <select id="editRoles" name="roleIds" class="form-select" multiple>
+                            <option th:each="role : ${roles}" th:value="${role.id}"
+                                    th:text="${role.name.replace('ROLE_', '')}"></option>
                         </select>
                     </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <form id="deleteForm" method="post">
-
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger">
-                        <i class="bi bi-exclamation-triangle"></i> Удаление пользователя
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div id="adminWarning" class="alert alert-danger d-none p-2">
-                        <b>ВНИМАНИЕ!</b> Вы удаляете пользователя с ролью <b>ADMIN</b>.
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button class="btn btn-primary">Сохранить</button>
                     </div>
-
-                    Вы уверены, что хотите удалить пользователя
-                    <b id="deleteUsername"></b>?
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-danger">Удалить</button>
-                </div>
-
-            </form>
-
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    document.getElementById('editModal')
-        .addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            this.querySelector('#editUserId').value = button.dataset.bsUserid;
-            this.querySelector('#editUsername').value = button.dataset.bsUsername;
-            this.querySelector('#editPassword').value = '';
-
-            const rolesSelect = this.querySelector('#editRoles');
-            const userRoles = button.dataset.bsRoles.split(',').map(Number);
-
-            Array.from(rolesSelect.options).forEach(option => {
-                option.selected = userRoles.includes(parseInt(option.value));
-            });
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle"></i> Удаление
+                            пользователя</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="adminWarning" class="alert alert-danger d-none p-2"><b>ВНИМАНИЕ!</b> Вы удаляете
+                            пользователя с ролью <b>ADMIN</b>.
+                        </div>
+                        Вы уверены, что хотите удалить пользователя <b id="deleteUsername"></b>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <form id="deleteUserForm" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
+            const b = event.relatedTarget;
+            if (!b) return;
+            this.querySelector('#editUserId').value = b.getAttribute('data-bs-userid');
+            this.querySelector('#editUsername').value = b.getAttribute('data-bs-username');
+            this.querySelector('#editSurname').value = b.getAttribute('data-bs-surname');
+            this.querySelector('#editAge').value = b.getAttribute('data-bs-age');
+            this.querySelector('#editEmail').value = b.getAttribute('data-bs-email');
+            const roles = (b.getAttribute('data-bs-roles') || "").split(',').map(Number);
+            const select = this.querySelector('#editRoles');
+            Array.from(select.options).forEach(o => o.selected = roles.includes(parseInt(o.value)));
         });
-
-    document.getElementById('deleteModal')
-        .addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-
-            const userId = button.dataset.bsUserid;
-            const username = button.dataset.bsUsername;
-            const roles = button.dataset.bsRoles.split(',');
-
-            document.getElementById('deleteForm').action = "/admin/delete/" + userId;
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+            const b = event.relatedTarget;
+            const id = b.getAttribute('data-bs-userid');
+            const username = b.getAttribute('data-bs-username');
+            const roles = (b.getAttribute('data-bs-roles') || '').split(',');
+            document.getElementById('deleteForm').action = "/admin/delete/" + id;
             document.getElementById('deleteUsername').textContent = username;
-
-            const warning = document.getElementById('adminWarning');
-            roles.includes('ROLE_ADMIN')
-                ? warning.classList.remove('d-none')
-                : warning.classList.add('d-none');
+            const w = document.getElementById('adminWarning');
+            w.classList.toggle('d-none', !roles.includes('ROLE_ADMIN'));
         });
-</script>
-
+        document.addEventListener("DOMContentLoaded", () => {
+            if (new URLSearchParams(location.search).get("tab") === "create") {
+                const el = document.querySelector('[data-bs-target="#createTab"]');
+                if (el) new bootstrap.Tab(el).show();
+            }
+        });
+    </script>
 </body>
 </html>

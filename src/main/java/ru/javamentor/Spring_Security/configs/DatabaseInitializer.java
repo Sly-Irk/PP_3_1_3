@@ -34,6 +34,9 @@ public class DatabaseInitializer {
                 Role userRole = getOrCreateRole(roleRepository, "ROLE_USER");
                 User admin = new User();
                 admin.setUsername("admin");
+                admin.setSurname("admin");
+                admin.setAge(30);
+                admin.setEmail("admin@mail.ru");
                 admin.setPassword(passwordEncoder.encode("admin"));
                 admin.setRoles(Set.of(adminRole, userRole));
                 userRepository.save(admin);
